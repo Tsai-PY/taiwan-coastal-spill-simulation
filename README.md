@@ -101,3 +101,27 @@
 python c:\download\taiwan-ports-tide-system\server.py
 ```
 系統會自動在 `http://localhost:8089` 啟動伺服器並自動為您開啟瀏覽器。
+
+---
+
+## 🌐 發布到公開網站 (Online Deployment)
+
+本系統為純靜態前端架構（免後端資料庫、免商業圖資 API Key），支援全世界任何免費靜態網站代管服務：
+
+### 方法一：Netlify / Vercel 拖曳發布（最推薦・30秒取得公開 HTTPS 網址）
+1. 雙擊執行 `c:\download\一鍵前往網站發布.bat`。
+2. 瀏覽器會自動開啟 [Netlify Drop](https://app.netlify.com/drop)，檔案總管亦會自動選取已打包好的壓縮檔：
+   ```text
+   c:\download\taiwan-ports-spill-simulation-release.zip
+   ```
+3. 用滑鼠將此 ZIP 檔拖入網頁虛線框中，10 秒內即可生成永久公開網址（例如：`https://taiwan-spill-sim.netlify.app`），支援手機與全球各地即時訪問！
+
+### 方法二：GitHub Pages（開源專案標準發布）
+本地 Git 儲存庫已完成初始化與 Commit，只需推送到您的 GitHub 帳號：
+```powershell
+cd c:\download\taiwan-ports-tide-system
+git remote add origin https://github.com/<您的GitHub帳號>/<儲存庫名>.git
+git branch -M main
+git push -u origin main
+```
+至儲存庫 **Settings ➔ Pages**，將來源設為 `main` 分支即可於 `https://<帳號>.github.io/<儲存庫名>/` 上線。
