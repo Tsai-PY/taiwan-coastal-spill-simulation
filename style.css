@@ -1,0 +1,2139 @@
+/* ==========================================================================
+   台灣環島港口與離島即時潮位系統 - 現代海事科技風格樣式表
+   ========================================================================== */
+
+:root {
+  --bg-primary: #070d1e;
+  --bg-secondary: #0e172e;
+  --bg-card: rgba(15, 23, 42, 0.88);
+  --bg-card-hover: rgba(30, 41, 59, 0.95);
+  --border-color: rgba(56, 189, 248, 0.22);
+  --border-glow: rgba(56, 189, 248, 0.6);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-cyan: #00f2fe;
+  --accent-blue: #38bdf8;
+  --accent-teal: #2dd4bf;
+  --accent-emerald: #10b981;
+  --accent-orange: #f97316;
+  --accent-red: #ef4444;
+  --accent-purple: #a855f7;
+  --glass-blur: blur(14px);
+  --shadow-main: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+  --shadow-glow: 0 0 20px rgba(56, 189, 248, 0.35);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  --transition-fast: 0.18s ease;
+  --transition-normal: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   Header Navigation Bar
+   ========================================================================== */
+.app-header {
+  height: 64px;
+  background: rgba(10, 17, 36, 0.92);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 1000;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, #0284c7, #00f2fe);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.45);
+}
+
+.brand-titles h1 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-titles .badge-rule {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.brand-titles p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.header-center-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-btn-group, .datum-btn-group {
+  display: flex;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-color);
+  padding: 3px;
+  border-radius: var(--radius-full);
+}
+
+.ctrl-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ctrl-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ctrl-btn.active {
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.4);
+}
+
+.btn-cruise {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #ffffff;
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  padding: 7px 16px;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.35);
+  transition: var(--transition-fast);
+}
+
+.btn-cruise:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+}
+
+.btn-cruise.active {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.5);
+}
+
+.header-status-section {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.live-clock-card {
+  text-align: right;
+  line-height: 1.25;
+}
+
+.live-clock-time {
+  font-size: 1.05rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  letter-spacing: 0.5px;
+}
+
+.live-clock-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.cwa-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+.live-pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-emerald);
+  border-radius: 50%;
+  animation: radar-pulse 1.8s infinite;
+}
+
+@keyframes radar-pulse {
+  0% { transform: scale(0.9); opacity: 0.8; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+  70% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.9); opacity: 0.8; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* ==========================================================================
+   Main Application Body (Layout)
+   ========================================================================== */
+.app-main {
+  flex: 1;
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 64px);
+  overflow: hidden;
+}
+
+/* Map Container */
+#map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: #060d1d;
+}
+
+/* Map Overlays & Floating Panels */
+.map-overlay-left {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 500;
+  width: 320px;
+  max-height: calc(100vh - 96px);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-main);
+  transition: transform var(--transition-normal);
+}
+
+.map-overlay-left.collapsed {
+  transform: translateX(-340px);
+}
+
+.map-overlay-left.hidden {
+  display: none !important;
+}
+
+.sidebar-toggle-btn.hidden {
+  display: none !important;
+}
+
+.sidebar-toggle-btn {
+  position: absolute;
+  top: 16px;
+  left: 344px;
+  z-index: 500;
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-main);
+  transition: left var(--transition-normal), background var(--transition-fast);
+}
+
+.map-overlay-left.collapsed + .sidebar-toggle-btn {
+  left: 16px;
+}
+
+.sidebar-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ports-count-badge {
+  font-size: 0.72rem;
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-cyan);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.sidebar-search-box {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-search-box input {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  padding: 7px 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.sidebar-search-box input:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+}
+
+.ports-list-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.port-item-card {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.port-item-card:hover {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateX(2px);
+}
+
+.port-item-card.active {
+  background: rgba(2, 132, 199, 0.35);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
+}
+
+.port-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.port-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.port-item-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.port-tag-pill {
+  font-size: 0.68rem;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.tag-major {
+  background: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.tag-island {
+  background: rgba(168, 85, 247, 0.18);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+
+.tag-circumnavigation {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+.port-item-level {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.port-item-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.port-trend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.trend-rising {
+  color: #34d399;
+}
+
+.trend-falling {
+  color: #fb923c;
+}
+
+/* ==========================================================================
+   Map Markers & Beside-the-Port Live Tide Badges (核心關鍵需求)
+   ========================================================================== */
+
+/* Custom Leaflet Marker Wrapper */
+.leaflet-div-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.port-marker-container {
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+.port-pin-beacon {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  cursor: pointer;
+}
+
+.beacon-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  animation: beacon-ring 2s infinite ease-out;
+}
+
+.beacon-core {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7px;
+  color: #fff;
+  border: 1px solid #ffffff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.port-pin-beacon:hover .beacon-core {
+  transform: scale(1.25);
+}
+
+/* Category Beacon Colors */
+.cat-major .beacon-core {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+}
+.cat-major .beacon-pulse {
+  background: rgba(239, 68, 68, 0.35);
+}
+
+@keyframes beacon-ring {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* -------------------------------------------------------------
+   各港地名簡潔標籤 (Port Name Only Label - 僅標示五大港地名)
+   ------------------------------------------------------------- */
+.port-side-badge {
+  position: absolute;
+  background: rgba(11, 19, 43, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: var(--radius-sm);
+  padding: 3px 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 8px rgba(56, 189, 248, 0.25);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  user-select: none;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 預設在右側 (Keelung, Hualien) */
+.badge-dir-right .port-side-badge {
+  left: 10px;
+  top: -10px;
+}
+.badge-dir-right .port-side-badge::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -4px;
+  transform: translateY(-50%);
+  border-width: 4px 4px 4px 0;
+  border-style: solid;
+  border-color: transparent rgba(11, 19, 43, 0.94) transparent transparent;
+}
+
+/* 在左側 (Taipei, Taichung, Kaohsiung) */
+.badge-dir-left .port-side-badge {
+  right: 10px;
+  top: -10px;
+}
+.badge-dir-left .port-side-badge::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -4px;
+  transform: translateY(-50%);
+  border-width: 4px 0 4px 4px;
+  border-style: solid;
+  border-color: transparent transparent transparent rgba(11, 19, 43, 0.94);
+}
+
+.port-side-badge:hover, .port-marker-container.active-port .port-side-badge {
+  transform: scale(1.15);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 4px 14px rgba(0, 242, 254, 0.5);
+  z-index: 999;
+}
+
+.badge-port-name {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.badge-trend-pill {
+  font-size: 0.58rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  padding: 0 2px;
+  border-radius: var(--radius-full);
+}
+
+.badge-trend-pill.trend-rising {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+.badge-trend-pill.trend-falling {
+  background: rgba(249, 115, 22, 0.2);
+  color: #fb923c;
+}
+
+.badge-row-bottom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 3px;
+}
+
+.badge-level-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+}
+
+.badge-level-value {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--accent-cyan);
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: -0.3px;
+  text-shadow: 0 0 4px rgba(0, 242, 254, 0.5);
+}
+
+.badge-level-unit {
+  font-size: 0.52rem;
+  color: var(--text-muted);
+}
+
+.badge-next-tide {
+  font-size: 0.62rem;
+  color: #94a3b8;
+}
+
+.badge-next-tide strong {
+  color: #38bdf8;
+  font-weight: 700;
+}
+  color: var(--text-secondary);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 3px;
+}
+
+.badge-next-tide {
+  color: #cbd5e1;
+}
+
+.badge-next-tide strong {
+  color: #38bdf8;
+}
+
+.badge-mini-diff {
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Right Side Drawer: In-depth Port Inspector & 24h Tide Curve
+   ========================================================================== */
+.map-overlay-right {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 500;
+  width: 390px;
+  max-height: calc(100vh - 96px);
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-main);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform var(--transition-normal), opacity var(--transition-normal);
+}
+
+.map-overlay-right.hidden {
+  transform: translateX(420px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.inspector-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  background: linear-gradient(180deg, rgba(30, 58, 138, 0.3) 0%, transparent 100%);
+}
+
+.inspector-titles h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inspector-titles p {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.inspector-close-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: var(--text-secondary);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: var(--transition-fast);
+}
+
+.inspector-close-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.inspector-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Current Tide Highlight Hero */
+.tide-hero-card {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(15, 23, 42, 0.75));
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.hero-level-display {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hero-number-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.hero-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--accent-cyan);
+  font-family: 'Courier New', Courier, monospace;
+  text-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
+}
+
+.hero-unit {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.hero-trend-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.hero-trend-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hero-subinfo {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+}
+
+/* 24H Astronomical Tide Curve Chart */
+.chart-container-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.chart-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chart-legend {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+#tide-curve-svg {
+  width: 100%;
+  height: 140px;
+  display: block;
+}
+
+/* 4 Tides Table */
+.tides-table-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.tides-table-title {
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tides-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.tides-data-table th {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  padding: 6px 8px;
+  font-weight: 500;
+}
+
+.tides-data-table td {
+  padding: 7px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+}
+
+.tides-data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.cell-high-tide {
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.cell-low-tide {
+  color: #f97316;
+  font-weight: 700;
+}
+
+/* Nautical & Clearance Advice Box */
+.nautical-advisory-box {
+  background: rgba(30, 41, 59, 0.45);
+  border-left: 3px solid #38bdf8;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 10px 14px;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: #cbd5e1;
+}
+
+.nautical-advisory-title {
+  font-weight: 700;
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 4px;
+}
+
+/* Central Weather Administration Source Link Button */
+.cwa-link-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(2, 132, 199, 0.2);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+  padding: 9px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.cwa-link-btn:hover {
+  background: rgba(2, 132, 199, 0.4);
+  border-color: var(--accent-cyan);
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(0, 242, 254, 0.3);
+}
+
+/* ==========================================================================
+   Circumnavigation Tour Floating Banner & Bottom Bar
+   ========================================================================== */
+.tour-progress-banner {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 550;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  border-radius: var(--radius-full);
+  padding: 8px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(16, 185, 129, 0.35);
+  animation: banner-enter 0.3s ease;
+}
+
+@keyframes banner-enter {
+  from { opacity: 0; transform: translate(-50%, -15px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.tour-text {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tour-ship-icon {
+  font-size: 1.1rem;
+  animation: ship-bob 1.5s infinite ease-in-out;
+}
+
+@keyframes ship-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-3px) rotate(4deg); }
+}
+
+.tour-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tour-stop-btn {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #f87171;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.tour-stop-btn:hover {
+  background: rgba(239, 68, 68, 0.4);
+  color: #fff;
+}
+
+/* Bottom Quick Ports Floating Carousel */
+.bottom-ports-bar {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(11, 19, 43, 0.88);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-main);
+  max-width: 90vw;
+  overflow-x: auto;
+}
+
+.quick-port-pill {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition-fast);
+}
+
+.quick-port-pill:hover, .quick-port-pill.active {
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+  color: #fff;
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+}
+
+.quick-pill-lvl {
+  font-size: 0.72rem;
+  color: var(--accent-cyan);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* ==========================================================================
+   CWA 30-Day Forecast Modal Dialog
+   ========================================================================== */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cwa-modal-box {
+  width: 900px;
+  max-width: 95vw;
+  height: 85vh;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modal-pop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modal-pop {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.modal-header h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-header .btn-close {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.modal-header .btn-close:hover {
+  color: #fff;
+}
+
+.modal-body {
+  flex: 1;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.modal-body iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* ==========================================================================
+   Leaflet Layer Control & County Tooltip Customization
+   ========================================================================== */
+.leaflet-control-layers {
+  background: rgba(15, 23, 42, 0.92) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-md) !important;
+  color: #f8fafc !important;
+  box-shadow: var(--shadow-main) !important;
+  padding: 8px 12px !important;
+  font-size: 0.8rem !important;
+}
+
+.leaflet-control-layers-base label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  margin: 4px 0 !important;
+  color: #cbd5e1 !important;
+}
+
+.leaflet-control-layers-base label:hover {
+  color: #00f2fe !important;
+}
+
+.county-tooltip {
+  background: rgba(15, 23, 42, 0.9) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-sm) !important;
+  color: #38bdf8 !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  padding: 3px 8px !important;
+}
+
+.county-tooltip::before {
+  display: none !important;
+}
+/* ==========================================================================
+   近海船難原油外洩污染擴散模擬樣式 (Oil Spill Simulation Styles)
+   ========================================================================== */
+
+.btn-spill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.22), rgba(249, 115, 22, 0.25));
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  border-radius: var(--radius-full);
+  color: #fca5a5;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.2);
+}
+
+.btn-spill:hover {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(249, 115, 22, 0.4));
+  color: #fff;
+  border-color: #ef4444;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.45);
+  transform: translateY(-1px);
+}
+
+.btn-spill.active {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: #fff;
+  border-color: #f87171;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+  animation: spillPulseBtn 2s infinite;
+}
+
+@keyframes spillPulseBtn {
+  0%, 100% { box-shadow: 0 0 14px rgba(239, 68, 68, 0.6); }
+  50% { box-shadow: 0 0 24px rgba(249, 115, 22, 0.9); }
+}
+
+/* 浮動海污模擬控制面板 (優先啟動於左側欄位) */
+.spill-panel {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: auto;
+  width: 420px;
+  max-height: calc(100vh - 96px);
+  background: rgba(11, 19, 38, 0.95);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 0 25px rgba(239, 68, 68, 0.2);
+  z-index: 1005;
+  display: flex;
+  flex-direction: column;
+  color: var(--text-primary);
+  transition: transform var(--transition-normal), opacity var(--transition-normal);
+  overflow: hidden;
+}
+
+.spill-panel.minimized .spill-panel-body {
+  display: none;
+}
+
+.spill-panel.minimized {
+  max-height: 56px;
+}
+
+.spill-panel-header {
+  padding: 12px 16px;
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.25), rgba(15, 23, 42, 0.85));
+  border-bottom: 1px solid rgba(239, 68, 68, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spill-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.spill-title-icon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
+}
+
+.spill-panel-title h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fecaca;
+  letter-spacing: 0.3px;
+  margin-bottom: 2px;
+}
+
+.spill-title-sub {
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.spill-panel-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.spill-btn-minimize, .spill-btn-close {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.spill-btn-minimize:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.spill-btn-close:hover {
+  background: #ef4444;
+  color: #fff;
+  border-color: #ef4444;
+}
+
+.spill-panel-body {
+  padding: 14px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: calc(100vh - 170px);
+}
+
+.spill-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spill-section-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.highlight-hours {
+  color: #f97316;
+  font-size: 0.92rem;
+}
+
+.spill-pin-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.spill-custom-pin-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.22), rgba(15, 23, 42, 0.88));
+  border: 1.5px solid rgba(168, 85, 247, 0.6);
+  border-radius: var(--radius-md);
+  color: #f1f5f9;
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-fast);
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.25);
+  width: 100%;
+}
+
+.spill-custom-pin-card:hover, .spill-custom-pin-card.active {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.38), rgba(147, 51, 234, 0.35));
+  border-color: #c084fc;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
+}
+
+.spill-custom-pin-card .pin-icon {
+  font-size: 1.6rem;
+  filter: drop-shadow(0 0 8px #a855f7);
+}
+
+.spill-custom-pin-card .pin-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spill-custom-pin-card .pin-text strong {
+  font-size: 0.86rem;
+  color: #f3e8ff;
+  letter-spacing: 0.3px;
+}
+
+.spill-custom-pin-card .pin-text span {
+  font-size: 0.7rem;
+  color: #cbd5e1;
+}
+
+.pin-status-tag {
+  font-size: 0.65rem;
+  color: #c084fc;
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+}
+
+/* 經緯度精確座標手動輸入列 */
+.spill-coords-input-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: flex-end;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+}
+
+.coords-input-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.coords-input-item label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.coords-input-item input {
+  width: 100%;
+  padding: 5px 8px;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-sm);
+  color: #38bdf8;
+  font-size: 0.82rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.coords-input-item input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+  background: rgba(15, 23, 42, 0.95);
+  color: #ffffff;
+}
+
+.coords-input-item input::-webkit-inner-spin-button,
+.coords-input-item input::-webkit-outer-spin-button {
+  opacity: 0.4;
+}
+
+.btn-coords-apply {
+  height: 30px;
+  padding: 0 12px;
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+  border: 1px solid #38bdf8;
+  border-radius: var(--radius-sm);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.35);
+}
+
+.btn-coords-apply:hover {
+  background: linear-gradient(135deg, #0369a1, #0284c7);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-coords-apply:active {
+  transform: translateY(0);
+}
+
+.spill-incident-info {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid #ef4444;
+}
+
+.spill-volume-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.spill-vol-btn {
+  padding: 6px 8px;
+  background: rgba(30, 41, 59, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.spill-vol-btn .vol-label {
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.spill-vol-btn .vol-val {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.spill-vol-btn:hover {
+  background: rgba(249, 115, 22, 0.18);
+  border-color: #f97316;
+}
+
+.spill-vol-btn.active {
+  background: rgba(249, 115, 22, 0.28);
+  border-color: #f97316;
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.35);
+}
+
+.spill-vol-btn.active .vol-label {
+  color: #fdba74;
+}
+
+.spill-vol-btn.active .vol-val {
+  color: #ffedd5;
+}
+
+.spill-timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spill-timeline-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.spill-action-btn {
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.spill-action-btn:hover {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+  color: #fff;
+}
+
+.spill-action-btn#btn-spill-play.playing {
+  background: rgba(239, 68, 68, 0.35);
+  border-color: #ef4444;
+  color: #fca5a5;
+}
+
+.spill-slider-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.spill-slider-wrap input[type=range] {
+  width: 100%;
+  accent-color: #f97316;
+  cursor: pointer;
+  height: 6px;
+  background: #1e293b;
+  border-radius: 3px;
+}
+
+.spill-slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  color: #64748b;
+}
+
+.spill-metrics-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.spill-metric-card {
+  padding: 8px 6px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: center;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.spill-metric-card.alert-red {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.spill-metric-card.alert-orange {
+  border-color: rgba(249, 115, 22, 0.35);
+  background: rgba(249, 115, 22, 0.08);
+}
+
+.spill-metric-card.alert-yellow {
+  border-color: rgba(234, 179, 8, 0.35);
+  background: rgba(234, 179, 8, 0.08);
+}
+
+.metric-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.metric-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.metric-dot.red-pulse {
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+.metric-dot.orange-pulse {
+  background: #f97316;
+  box-shadow: 0 0 6px #f97316;
+}
+
+.metric-dot.yellow-pulse {
+  background: #eab308;
+  box-shadow: 0 0 6px #eab308;
+}
+
+.metric-label {
+  font-size: 0.64rem;
+  color: #cbd5e1;
+}
+
+.metric-value {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.metric-sub {
+  font-size: 0.62rem;
+  color: #94a3b8;
+}
+
+.spill-status-box {
+  padding: 8px 10px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 當前海況與海流現況專屬科技感卡片 */
+.current-condition-box {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.12), rgba(15, 23, 42, 0.88)) !important;
+  border: 1px solid rgba(56, 189, 248, 0.38) !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 0 12px rgba(56, 189, 248, 0.08);
+}
+
+.current-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+  padding-bottom: 4px;
+}
+
+.current-box-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #bae6fd;
+}
+
+.current-live-badge {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #00f2fe;
+  background: rgba(0, 242, 254, 0.15);
+  border: 1px solid rgba(0, 242, 254, 0.35);
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+}
+
+.current-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.current-stat-item {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.c-stat-lbl {
+  font-size: 0.62rem;
+  color: #94a3b8;
+}
+
+.c-stat-val {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.text-cyan { color: #38bdf8 !important; }
+.text-orange { color: #fb923c !important; }
+
+.current-detail-row {
+  font-size: 0.68rem;
+  line-height: 1.35;
+  color: #cbd5e1;
+  background: rgba(0, 0, 0, 0.22);
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.spill-drift-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.drift-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.drift-lbl {
+  color: #94a3b8;
+}
+
+.drift-val {
+  font-weight: 600;
+  color: #38bdf8;
+}
+
+.text-threat {
+  color: #f87171 !important;
+}
+
+.text-warning {
+  color: #fbbf24 !important;
+}
+
+.spill-advisory-box {
+  padding: 8px 10px;
+  background: rgba(239, 68, 68, 0.07);
+  border-left: 3px solid #ef4444;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.spill-advisory-title {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #fca5a5;
+}
+
+.spill-advisory-text {
+  font-size: 0.7rem;
+  color: #e2e8f0;
+  line-height: 1.4;
+}
+
+.spill-legend-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 6px 8px;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: var(--radius-sm);
+  font-size: 0.66rem;
+  color: #94a3b8;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legend-box {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.legend-box.lg-red { background: #991b1b; border: 1px solid #ef4444; }
+.legend-box.lg-orange { background: #c2410c; border: 1px solid #f97316; }
+.legend-box.lg-yellow { background: #a16207; border: 1px solid #eab308; }
+.legend-line {
+  width: 14px;
+  height: 2px;
+}
+.legend-line.lg-vector { background: #38bdf8; }
+.legend-arrow.lg-cur {
+  color: #38bdf8;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+.legend-line.lg-port { background: #ef4444; border-top: 1px dashed #ef4444; }
+.legend-line.lg-shore {
+  background: #ef4444;
+  height: 3px;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+/* 岸際油污阻截與累計監測專用卡片 */
+.coastal-impact-box {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: inset 0 0 15px rgba(239, 68, 68, 0.08);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.coastal-impact-box.beached-active {
+  border-color: #ef4444;
+  box-shadow: inset 0 0 20px rgba(239, 68, 68, 0.25), 0 0 15px rgba(239, 68, 68, 0.3);
+}
+
+.coastal-contact-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.coastal-contact-badge.contact-safe {
+  background: rgba(14, 165, 233, 0.2);
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+}
+
+.coastal-contact-badge.contact-danger {
+  background: rgba(239, 68, 68, 0.25);
+  border: 1px solid #ef4444;
+  color: #f87171;
+  animation: dangerPulse 1.5s infinite;
+}
+
+@keyframes dangerPulse {
+  0% { box-shadow: 0 0 4px rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.9); }
+  100% { box-shadow: 0 0 4px rgba(239, 68, 68, 0.4); }
+}
+
+/* 岸際受污沉積標記線 (Leaflet Polyline) */
+.beached-shore-line {
+  stroke: #ef4444;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.95)) drop-shadow(0 0 12px rgba(249, 115, 22, 0.8));
+  animation: beachedGlow 1.8s infinite alternate ease-in-out;
+}
+
+@keyframes beachedGlow {
+  from { stroke-opacity: 0.8; stroke-width: 5px; }
+  to { stroke-opacity: 1.0; stroke-width: 7.5px; }
+}
+
+/* 岸際受污沉積旗標 */
+.coastal-accumulation-badge {
+  background: rgba(15, 23, 42, 0.95) !important;
+  border: 1.5px solid #ef4444 !important;
+  border-radius: var(--radius-full) !important;
+  color: #fca5a5 !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  padding: 3px 10px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8), 0 0 12px rgba(239, 68, 68, 0.7) !important;
+  white-space: nowrap;
+}
+.coastal-accumulation-badge::before {
+  display: none !important;
+}
+
+.text-red { color: #f87171 !important; font-weight: 700; }
+.text-orange { color: #fb923c !important; font-weight: 700; }
+
+/* 海流現況地圖動態流線/向量箭頭 (Ambient Ocean Current Streamlines) */
+.ambient-current-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  pointer-events: auto;
+  cursor: pointer;
+  filter: drop-shadow(0 0 3px rgba(56, 189, 248, 0.6));
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.ambient-current-arrow:hover {
+  filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.95));
+  transform: scale(1.3);
+}
+
+.ambient-current-arrow svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* 預估海流擴散主方向漂移標記 - 縮小至點狀標記 (Point Dot Marker) */
+.dispersion-direction-dot-wrap {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.direction-dot-core {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00f2fe;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 0 6px #00f2fe, 0 0 10px rgba(0, 242, 254, 0.85);
+  z-index: 2;
+  transition: transform var(--transition-fast);
+}
+
+.dispersion-direction-dot-wrap:hover .direction-dot-core {
+  transform: scale(1.3);
+  box-shadow: 0 0 12px #00f2fe, 0 0 16px rgba(0, 242, 254, 1);
+}
+
+.direction-dot-pulse {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 242, 254, 0.85);
+  animation: dirDotPulse 2s infinite ease-out;
+  z-index: 1;
+}
+
+@keyframes dirDotPulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+/* 擴散推演時間節點標記 (T+3h, T+12h, T+24h ...) */
+.milestone-marker-icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #facc15;
+  border: 1.5px solid #0f172a;
+  box-shadow: 0 0 6px #facc15;
+}
+
+/* 沉船標記樣式 (Shipwreck Marker) */
+.shipwreck-marker-icon {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.shipwreck-core {
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(circle, #7f1d1d, #1c1917);
+  border: 2px solid #ef4444;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  z-index: 2;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.85);
+}
+
+.shipwreck-pulse-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #ef4444;
+  border-radius: 50%;
+  animation: shipwreckPulse 1.8s infinite ease-out;
+  pointer-events: none;
+}
+
+@keyframes shipwreckPulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* 點選自訂沉船模式地圖樣式 */
+.map-pin-drop-mode {
+  cursor: crosshair !important;
+}
+
+.map-pin-drop-mode .leaflet-grab {
+  cursor: crosshair !important;
+}
+
+/* 向量漂移文字 Tooltip 樣式 */
+.spill-vector-tooltip {
+  background: rgba(15, 23, 42, 0.92) !important;
+  border: 1px solid #38bdf8 !important;
+  color: #38bdf8 !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  padding: 3px 6px !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+.spill-vector-tooltip::before {
+  display: none !important;
+}
+
+@media (max-width: 1024px) {
+  .map-overlay-left {
+    width: 280px;
+  }
+  .sidebar-toggle-btn {
+    left: 304px;
+  }
+  .map-overlay-right {
+    width: 330px;
+  }
+  .header-center-controls .filter-btn-group span {
+    display: none;
+  }
+  .spill-panel {
+    width: 380px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    height: auto;
+    padding: 10px 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .header-status-section {
+    display: none;
+  }
+  .map-overlay-left {
+    width: calc(100vw - 32px);
+    max-height: 45vh;
+  }
+  .map-overlay-right {
+    width: calc(100vw - 32px);
+    right: 16px;
+    bottom: 16px;
+    top: auto;
+    max-height: 50vh;
+  }
+  .spill-panel {
+    width: calc(100vw - 32px);
+    left: 16px;
+    top: 70px;
+    max-height: 75vh;
+  }
+  .bottom-ports-bar {
+    display: none;
+  }
+}
