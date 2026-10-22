@@ -42,6 +42,7 @@ body {
   color: var(--text-primary);
   overflow: hidden;
   height: 100vh;
+  height: 100dvh;
   width: 100vw;
   display: flex;
   flex-direction: column;
@@ -116,7 +117,7 @@ body {
   gap: 12px;
 }
 
-.filter-btn-group, .datum-btn-group {
+.sea-area-btn-group, .filter-btn-group, .datum-btn-group {
   display: flex;
   background: rgba(15, 23, 42, 0.8);
   border: 1px solid var(--border-color);
@@ -1268,8 +1269,23 @@ body {
   background: linear-gradient(90deg, rgba(239, 68, 68, 0.25), rgba(15, 23, 42, 0.85));
   border-bottom: 1px solid rgba(239, 68, 68, 0.3);
   display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spill-header-main {
+  display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+}
+
+.mobile-drag-handle {
+  display: none;
+}
+
+.mobile-peek-summary {
+  display: none;
 }
 
 .spill-panel-title {
@@ -2107,32 +2123,293 @@ body {
 }
 
 @media (max-width: 768px) {
+  /* 頂部海事導航列：在手機上精準呈現雙排架構 (第一排標題與圖示，第二排橫向滑動操作藥丸) */
   .app-header {
     height: auto;
-    padding: 10px 14px;
-    flex-wrap: wrap;
-    gap: 8px;
+    min-height: 70px;
+    padding: 6px 12px 6px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 6px;
   }
+
+  .brand-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .brand-icon {
+    font-size: 1.35rem;
+  }
+
+  .brand-titles h1 {
+    font-size: 0.96rem;
+    line-height: 1.25;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .badge-rule {
+    font-size: 0.65rem;
+    padding: 1px 6px;
+  }
+
+  .brand-titles p {
+    display: none; /* 手機版隱藏過長次標題以維持畫面最簡約 */
+  }
+
   .header-status-section {
     display: none;
   }
-  .map-overlay-left {
-    width: calc(100vw - 32px);
-    max-height: 45vh;
+
+  /* 第二排：五大商港快速切換、基準面、海污推演按鈕 (橫向無縫滑動列) */
+  .header-center-controls {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    padding-bottom: 2px;
+    scrollbar-width: none;
   }
-  .map-overlay-right {
-    width: calc(100vw - 32px);
-    right: 16px;
-    bottom: 16px;
-    top: auto;
-    max-height: 50vh;
+
+  .header-center-controls::-webkit-scrollbar {
+    display: none;
   }
+
+  .sea-area-btn-group,
+  .filter-btn-group,
+  .datum-btn-group {
+    display: inline-flex;
+    flex-shrink: 0;
+    gap: 4px;
+  }
+
+  .header-center-controls .ctrl-btn {
+    padding: 5px 9px;
+    font-size: 0.74rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .btn-spill {
+    padding: 5px 10px;
+    font-size: 0.74rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* 底部抽屜式船難海污面板 (Bottom Sheet Docking) */
   .spill-panel {
-    width: calc(100vw - 32px);
-    left: 16px;
-    top: 70px;
-    max-height: 75vh;
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 80dvh;
+    border-radius: 18px 18px 0 0;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    border-top: 1.5px solid rgba(239, 68, 68, 0.5);
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.75), 0 0 25px rgba(239, 68, 68, 0.25);
+    z-index: 1010;
+    transition: max-height 0.32s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.3s ease;
   }
+
+  /* 頂部拖曳/點擊條 (Drag Handle) */
+  .mobile-drag-handle {
+    display: block;
+    width: 38px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.38);
+    border-radius: 2px;
+    margin: 0 auto 5px auto;
+    cursor: pointer;
+  }
+
+  .spill-panel-header {
+    padding: 6px 14px 10px 14px;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .desktop-sub {
+    display: none;
+  }
+
+  .mobile-peek-summary {
+    display: inline-block;
+    color: #fdba74;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  /* 收合/展開按鈕樣式 */
+  .spill-btn-minimize {
+    width: auto;
+    min-width: 36px;
+    height: 28px;
+    padding: 0 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #fecaca;
+  }
+
+  .spill-btn-close {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* 收合 Peek 狀態：高度維持 ~56px，釋出 90% 以上的手機螢幕空間供完整閱覽地圖與點擊沉船 */
+  .spill-panel.minimized {
+    max-height: 56px;
+    overflow: hidden;
+  }
+
+  .spill-panel.minimized .spill-panel-body {
+    display: none;
+  }
+
+  .spill-panel.minimized .mobile-peek-summary {
+    animation: peekGlow 2.5s infinite;
+  }
+
+  @keyframes peekGlow {
+    0%, 100% { opacity: 0.85; }
+    50% { opacity: 1; color: #ffedd5; text-shadow: 0 0 8px rgba(249, 115, 22, 0.6); }
+  }
+
+  /* 面板展開狀態：內部捲動流暢 */
+  .spill-panel-body {
+    padding: 10px 12px 28px 12px;
+    max-height: calc(80dvh - 56px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 10px;
+  }
+
+  /* 經緯度手動輸入群組在手機上的排版 */
+  .spill-coords-input-group {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .btn-coords-apply {
+    grid-column: span 2;
+    height: 38px;
+    font-size: 0.84rem;
+    justify-content: center;
+  }
+
+  /* 防止 iOS Safari 在點擊輸入框時畫面強制放大 (必須 >= 16px) */
+  .coords-input-item input,
+  #port-search-input {
+    font-size: 16px !important;
+  }
+
+  /* 自訂沉船卡片 */
+  .spill-custom-pin-card {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  .spill-custom-pin-card .pin-icon {
+    font-size: 1.3rem;
+  }
+  .spill-custom-pin-card .pin-text strong {
+    font-size: 0.8rem;
+  }
+  .spill-custom-pin-card .pin-text span {
+    font-size: 0.68rem;
+  }
+
+  /* 原油外洩規模按鈕觸控優化 */
+  .spill-vol-btn {
+    padding: 8px 4px;
+    min-height: 48px;
+  }
+  .spill-vol-btn .vol-label {
+    font-size: 0.7rem;
+  }
+  .spill-vol-btn .vol-val {
+    font-size: 0.72rem;
+  }
+
+  /* 時間軸播放與滑桿 */
+  .spill-action-btn {
+    padding: 6px 12px;
+    font-size: 0.78rem;
+  }
+  .spill-slider-wrap input[type=range] {
+    height: 10px;
+  }
+
+  /* 幾何面積與岸際監測卡片文字微調 */
+  .spill-metrics-container {
+    gap: 4px;
+  }
+  .spill-metric-card {
+    padding: 6px 4px;
+  }
+  .metric-val {
+    font-size: 0.85rem !important;
+  }
+
+  /* 右下角 Leaflet 縮放按鈕上移，避免被底端抽屜遮擋 */
+  .leaflet-bottom.leaflet-right {
+    bottom: 64px !important;
+    right: 10px !important;
+  }
+
+  /* 右側抽屜在手機上的 Bottom Sheet 樣式 */
+  .map-overlay-right {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 82dvh;
+    border-radius: 18px 18px 0 0;
+    border-top: 1.5px solid rgba(56, 189, 248, 0.4);
+    z-index: 1025;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.8);
+  }
+
+  .map-overlay-right .inspector-drawer-body {
+    max-height: calc(82dvh - 65px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 左側商港清單在手機上的樣式 */
+  .map-overlay-left {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 80dvh;
+    border-radius: 18px 18px 0 0;
+    z-index: 1020;
+  }
+
   .bottom-ports-bar {
     display: none;
   }

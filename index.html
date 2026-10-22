@@ -2,8 +2,8 @@
 <html lang="zh-Hant-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>台灣沿海船難海污模擬系統 ｜ 五大商港潮位與海流擴散推演</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>台灣沿海船難海污模擬系統 ｜ 海流現況與擴散推演</title>
   
   <!-- Leaflet CSS (Local offline bundle with CDN fallback) -->
   <link rel="stylesheet" href="lib/leaflet.css">
@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="style.css">
   
   <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="app.ico">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
 </head>
 <body>
@@ -27,41 +28,33 @@
           <span class="badge-rule">海流現況與擴散推演</span>
         </h1>
         <p>
-          <span>依實時海流標示預估擴散範圍與方向 ｜ 台北・基隆・台中・高雄・花蓮</span>
+          <span>依實時海流標示預估擴散範圍與方向 ｜ 菲氏海難擴散物理模型</span>
         </p>
       </div>
     </div>
 
-    <!-- 中間操作區：五大港切換、基準面、環島巡航 -->
+    <!-- 中間操作區：臺灣周邊海域海流情境快速定位與模擬面板開關 -->
     <div class="header-center-controls">
-      <!-- 五大商港快速切換 -->
-      <div class="filter-btn-group" title="快速定位至指定商港">
-        <button class="ctrl-btn active" data-port="all">全臺五大港</button>
-        <button class="ctrl-btn" data-port="taipei">台北港</button>
-        <button class="ctrl-btn" data-port="keelung">基隆港</button>
-        <button class="ctrl-btn" data-port="taichung">台中港</button>
-        <button class="ctrl-btn" data-port="kaohsiung">高雄港</button>
-        <button class="ctrl-btn" data-port="hualien">花蓮港</button>
+      <!-- 臺灣周邊海域海流快速定位 -->
+      <div class="sea-area-btn-group" title="快速切換臺灣周邊海域海流推演視角">
+        <button class="ctrl-btn active" data-sea="all">全臺海域海流</button>
+        <button class="ctrl-btn" data-sea="north">北部海峽 (基隆/富貴角外海)</button>
+        <button class="ctrl-btn" data-sea="strait">臺灣海峽中段 (彰雲外海)</button>
+        <button class="ctrl-btn" data-sea="south">西南海域 (高雄外海)</button>
+        <button class="ctrl-btn" data-sea="east">東部外海 (黑潮主流)</button>
       </div>
 
-      <!-- 基準面切換 -->
-      <div class="datum-btn-group" title="切換潮位起算基準面">
-        <button class="ctrl-btn active" data-datum="chart_datum" title="當地最低低潮位為0，航海吃水安全最佳基準">海圖基準 (CD)</button>
-        <button class="ctrl-btn" data-datum="twvd" title="臺灣高程基準 TWVD2001 (基隆平均海平面為0)">臺灣高程 (TWVD)</button>
-        <button class="ctrl-btn" data-datum="msl" title="當地平均海平面為0 (平均水位)">平均海面 (MSL)</button>
-      </div>
-
-      <!-- 船難海污擴散模擬按鈕 (左側欄位優先啟動) -->
-      <button class="btn-spill" id="btn-spill-toggle" title="開啟/關閉近海船難原油外洩污染擴散範圍標示與模擬">
-        <span>🛢️ 船難海污模擬</span>
+      <!-- 船難海污擴散模擬開關按鈕 -->
+      <button class="btn-spill active" id="btn-spill-toggle" title="開啟/收合近海船難原油外洩污染擴散推演面板">
+        <span>🛢️ 海污推演面板</span>
       </button>
     </div>
 
-    <!-- 右側即時時鐘與氣象署連線狀態 -->
+    <!-- 右側即時時鐘與海流推演運算狀態 -->
     <div class="header-status-section">
-      <div class="cwa-status-pill" title="氣象署潮位即時連線校正中">
+      <div class="cwa-status-pill" title="即時洋流動力學與海難擴散模擬中">
         <div class="live-pulse-dot"></div>
-        <span>CWA 潮汐即時推算中</span>
+        <span>即時海流動力學推演中</span>
       </div>
 
       <div class="live-clock-card">
@@ -83,18 +76,24 @@
          近海船難原油外洩污染擴散模擬懸浮面板 (Oil Spill Simulation Panel - 左側欄位優先啟動)
          ========================================================================== -->
     <div class="spill-panel" id="spill-panel" style="display: flex;">
-      <!-- 面板標題列 -->
-      <div class="spill-panel-header">
-        <div class="spill-panel-title">
-          <span class="spill-title-icon">🛢️</span>
-          <div>
-            <h3>台灣沿海船難海污模擬推演</h3>
-            <p class="spill-title-sub">依海流現況標示預估擴散範圍與方向 ｜ 菲氏擴散模型</p>
+      <!-- 面板標題列 (手機版支援底部抽屜與點擊展開) -->
+      <div class="spill-panel-header" id="spill-panel-header">
+        <div class="mobile-drag-handle" id="mobile-drag-handle"></div>
+        <div class="spill-header-main">
+          <div class="spill-panel-title">
+            <span class="spill-title-icon">🛢️</span>
+            <div>
+              <h3>台灣沿海船難海污模擬推演</h3>
+              <p class="spill-title-sub">
+                <span class="desktop-sub">依海流現況標示預估擴散範圍與方向 ｜ 菲氏擴散模型</span>
+                <span class="mobile-peek-summary" id="mobile-peek-summary">T+6h ｜ 300噸 ｜ 點此展開 ▲</span>
+              </p>
+            </div>
           </div>
-        </div>
-        <div class="spill-panel-header-actions">
-          <button class="spill-btn-minimize" id="btn-spill-minimize" title="最小化/展開面板">_</button>
-          <button class="spill-btn-close" id="btn-spill-close" title="關閉海污模擬">✕</button>
+          <div class="spill-panel-header-actions">
+            <button class="spill-btn-minimize" id="btn-spill-minimize" title="最小化/展開面板">_</button>
+            <button class="spill-btn-close" id="btn-spill-close" title="關閉海污模擬">✕</button>
+          </div>
         </div>
       </div>
 
@@ -239,8 +238,8 @@
           </div>
           <div class="spill-drift-row">
             <div class="drift-item">
-              <span class="drift-lbl">最近受威脅商港：</span>
-              <span class="drift-val text-threat" id="spill-nearest-port">台北港 (4.8 nm)</span>
+              <span class="drift-lbl">預估漂移中心：</span>
+              <span class="drift-val text-cyan" id="spill-drift-center-coords">25.2150°N, 121.3420°E</span>
             </div>
             <div class="drift-item">
               <span class="drift-lbl">沿岸拍岸預警：</span>
@@ -286,7 +285,7 @@
         <!-- 6. 海事緊急應變處置決策指引 -->
         <div class="spill-advisory-box">
           <div class="spill-advisory-title">
-            <span>🛡️ 海委會海保署 / 港務公司應變建議</span>
+            <span>🛡️ 海委會海保署海洋污染應變指引</span>
           </div>
           <div class="spill-advisory-text" id="spill-advisory-text">
             建議港口主航道入口預置防污攔油索，並派遣汲油船於重度油帶上風處作業...
@@ -305,128 +304,7 @@
       </div>
     </div>
 
-    <!-- 左側懸浮五大港口清單面板 (Collapsible Sidebar - 初始由船難海污模擬優先佔用) -->
-    <aside class="map-overlay-left hidden" id="map-overlay-left">
-      <div class="sidebar-header">
-        <div class="sidebar-title">
-          <span>⚓ 五大國際商港監測</span>
-          <span class="ports-count-badge" id="ports-count-badge">5 處國際商港</span>
-        </div>
-      </div>
-
-      <div class="sidebar-search-box">
-        <input type="text" id="port-search-input" placeholder="🔍 快速篩選商港 (台北/基隆/台中/高雄/花蓮)..." autocomplete="off">
-      </div>
-
-      <div class="ports-list-container" id="ports-list-container">
-        <!-- 港口卡片由 JS 動態注入 -->
-      </div>
-    </aside>
-
-    <!-- 側邊欄展開/收合觸發按鈕 -->
-    <button class="sidebar-toggle-btn hidden" id="sidebar-toggle-btn" title="展開/收合港口列表">◀</button>
-
-    <!-- 右側懸浮抽屜：選取港口詳細水文與 24H 潮位曲線 (Inspector Drawer - 初始隱藏保持地圖視野) -->
-    <section class="map-overlay-right hidden" id="map-overlay-right">
-      <div class="inspector-header">
-        <div class="inspector-titles">
-          <h2 id="inspector-port-name">台北港</h2>
-          <p id="inspector-port-sub">新北市 八里區 ｜ CWA 測站代碼：T500023</p>
-        </div>
-        <button class="inspector-close-btn" id="inspector-close-btn" title="關閉檢視抽屜">✕</button>
-      </div>
-
-      <div class="inspector-content">
-        <!-- 即時潮位大型 Hero 數據卡 -->
-        <div class="tide-hero-card">
-          <div class="hero-level-display">
-            <span class="hero-label">當前即時推算潮位</span>
-            <div class="hero-number-wrap">
-              <span class="hero-number" id="hero-number">+0</span>
-              <span class="hero-unit">公分 (cm)</span>
-            </div>
-          </div>
-          <div class="hero-trend-wrap">
-            <div class="hero-trend-badge trend-rising" id="hero-trend-badge">
-              ▲ 漲潮中
-            </div>
-            <div class="hero-subinfo" id="hero-subinfo">
-              距下次滿潮尚餘 --小時--分
-            </div>
-          </div>
-        </div>
-
-        <!-- 24 小時天文潮位預報曲線圖 -->
-        <div class="chart-container-box">
-          <div class="chart-header">
-            <div class="chart-title">
-              <span>📈 24 小時連續潮位曲線</span>
-            </div>
-            <div class="chart-legend">紅色標記為當前時刻</div>
-          </div>
-          <svg id="tide-curve-svg" viewBox="0 0 350 135"></svg>
-        </div>
-
-        <!-- 本日 4 極值潮位預報表 -->
-        <div class="tides-table-box">
-          <div class="tides-table-title">
-            <span>📅 今日滿潮與乾潮預報 (中央氣象署)</span>
-            <span style="font-size: 0.7rem; color: #94a3b8;">單位: 公分(cm)</span>
-          </div>
-          <table class="tides-data-table">
-            <thead>
-              <tr>
-                <th>潮汐</th>
-                <th>預測時間</th>
-                <th>相對海圖</th>
-                <th>相對高程</th>
-                <th>相對平均面</th>
-              </tr>
-            </thead>
-            <tbody id="tides-table-body">
-              <!-- JS 動態填入表格 -->
-            </tbody>
-          </table>
-        </div>
-
-        <!-- 航海泊靠水深與安全評估 -->
-        <div class="nautical-advisory-box">
-          <div class="nautical-advisory-title">
-            <span>🚢 港灣海象與進出港建議</span>
-          </div>
-          <div id="nautical-advisory-content">
-            載入中...
-          </div>
-        </div>
-
-        <!-- 氣象署官網 30 天預報對接按鈕 -->
-        <a href="#" class="cwa-link-btn" id="cwa-direct-link" title="開啟中央氣象署未來 30 天詳細潮位報表">
-          <span>🌐 檢視中央氣象署 未來 30 天潮汐預報表</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- 底部快速港口切換列 (Bottom Carousel) -->
-    <nav class="bottom-ports-bar" id="bottom-ports-bar" aria-label="五大商港快速切換">
-      <!-- JS 動態填入五大商港標籤 -->
-    </nav>
-
   </main>
-
-  <!-- ==========================================================================
-       中央氣象署 30 天潮位預報彈窗 (Modal Dialog)
-       ========================================================================== -->
-  <div class="modal-backdrop" id="cwa-modal-backdrop" role="dialog" aria-modal="true">
-    <div class="cwa-modal-box">
-      <div class="modal-header">
-        <h3 id="cwa-modal-title">交通部中央氣象署 未來 30 天潮汐預報表</h3>
-        <button class="btn-close" id="modal-close-btn" aria-label="關閉視窗">✕</button>
-      </div>
-      <div class="modal-body">
-        <iframe id="cwa-modal-iframe" src="about:blank" title="中央氣象署官方預報表"></iframe>
-      </div>
-    </div>
-  </div>
 
   <!-- Leaflet JS (Local offline bundle with CDN fallback) -->
   <script src="lib/leaflet.js"></script>
@@ -440,5 +318,21 @@
   <script src="tide-data.js"></script>
   <script src="app.js"></script>
 
+  <!-- Desktop App Heartbeat & Lifecycle -->
+  <script>
+    (function() {
+      setInterval(function() {
+        try { fetch('/api/heartbeat').catch(function() {}); } catch (e) {}
+      }, 2000);
+
+      window.addEventListener('beforeunload', function() {
+        try {
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon('/api/exit');
+          }
+        } catch (e) {}
+      });
+    })();
+  </script>
 </body>
 </html>

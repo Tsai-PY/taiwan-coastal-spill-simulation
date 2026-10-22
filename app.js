@@ -87,17 +87,13 @@ class TaiwanTideApp {
     this.initMap();
     this.initClock();
     this.initEventListeners();
-    this.renderPortsList();
     this.renderMapMarkers();
-    this.renderBottomPills();
-    this.selectPort(this.selectedPortId, false);
     this.initSpillSimulation();
 
-    // 每 1 秒鐘即時更新潮位數值與時鐘
+    // 每 1 秒鐘即時更新時鐘
     setInterval(() => {
       this.now = new Date();
       this.updateClock();
-      this.updateAllTideLevels();
     }, 1000);
   }
 
@@ -105,11 +101,16 @@ class TaiwanTideApp {
      1. 地圖初始化 (Leaflet)
      ------------------------------------------------------------- */
   initMap() {
-    // 臺灣中心經緯度，完整包容五大商港
+    const isMobile = window.innerWidth <= 768;
+    const initialCenter = isMobile ? [23.7, 120.95] : [23.95, 121.0];
+    const initialZoom = isMobile ? 6.8 : 7.8;
+
+    // 臺灣中心經緯度，完整包容五大商港 (手機直向螢幕自動適應為 23.7°N, 120.95°E, zoom 6.8)
     this.map = L.map("map", {
-      center: [23.95, 121.0],
-      zoom: 7.8,
-      minZoom: 6,
+      center: initialCenter,
+      zoom: initialZoom,
+      zoomSnap: 0.1,
+      minZoom: 5.5,
       maxZoom: 16,
       zoomControl: false
     });
@@ -315,7 +316,7 @@ class TaiwanTideApp {
   }
 
   /* -------------------------------------------------------------
-     3. 地圖標記與港旁即時潮位卡片 (Requirement 3: 各港旁邊即時顯示潮資料)
+     3. 地圖主要商港地名標記 (僅保留地名作為沿岸地理標示)
      ------------------------------------------------------------- */
   renderMapMarkers() {
     Object.values(this.markers).forEach((m) => this.map.removeLayer(m));
@@ -333,479 +334,58 @@ class TaiwanTideApp {
 
       const marker = L.marker(port.coords, {
         icon: customIcon,
-        zIndexOffset: 100
+        zIndexOffset: 100,
+        interactive: false
       });
 
       marker.addTo(this.map);
-
-      // 點擊事件：切換選取該港
-      marker.on("click", (e) => {
-        L.DomEvent.stopPropagation(e);
-        this.selectPort(port.id, true);
-      });
-
       this.markers[port.id] = marker;
     });
   }
 
   createPortMarkerHtml(port) {
-    const isActive = port.id === this.selectedPortId ? "active-port" : "";
-
     return `
-      <div class="port-marker-container cat-major badge-dir-${port.badgeDir} ${isActive}" id="marker-${port.id}">
-        <div class="port-pin-beacon" title="點選檢視 ${port.name} 詳細水文">
-          <div class="beacon-pulse"></div>
-          <div class="beacon-core">⚓</div>
-        </div>
-        <div class="port-side-badge port-name-only-badge" title="點選檢視 ${port.name} 水文資訊">
+      <div class="port-marker-container port-landmark-only" id="marker-${port.id}" style="pointer-events: none;">
+        <div class="port-side-badge port-name-only-badge" style="pointer-events: none;">
           <span class="badge-port-name">${port.name}</span>
         </div>
       </div>
     `;
   }
 
-  updateAllTideLevels() {
-    TIDE_PORTS_DATA.forEach((port) => {
-      const tideCalc = this.calculateRealtimeTide(port);
 
-      // 更新側邊欄列表數值
-      const sidebarItem = document.getElementById(`port-item-${port.id}`);
-      if (sidebarItem) {
-        const itemLvl = sidebarItem.querySelector(".port-item-level");
-        const itemTrend = sidebarItem.querySelector(".port-trend-badge");
-        if (itemLvl) {
-          const levelSign = tideCalc.level > 0 ? "+" : "";
-          itemLvl.textContent = `${levelSign}${tideCalc.level} cm`;
-        }
-        if (itemTrend) {
-          itemTrend.className = `port-trend-badge ${tideCalc.trendClass}`;
-          itemTrend.innerHTML = `${tideCalc.trendIcon} ${tideCalc.trendText}`;
-        }
-      }
-    });
 
-    // 更新右側抽屜 Hero 即時潮位
-    const selectedPort = TIDE_PORTS_DATA.find((p) => p.id === this.selectedPortId);
-    if (selectedPort) {
-      this.updateInspectorHero(selectedPort);
-    }
-  }
 
   /* -------------------------------------------------------------
-     4. 側邊欄列表與搜尋
+     10. 臺灣周邊海域海流推演情境定位 (Sea Area Current Presets)
      ------------------------------------------------------------- */
-  renderPortsList() {
-    const container = document.getElementById("ports-list-container");
-    if (!container) return;
-
-    container.innerHTML = "";
-
-    const filtered = TIDE_PORTS_DATA.filter((p) => {
-      if (!this.searchQuery) return true;
-      return (
-        p.name.includes(this.searchQuery) ||
-        p.fullName.includes(this.searchQuery) ||
-        p.county.includes(this.searchQuery)
-      );
-    });
-
-    const countBadge = document.getElementById("ports-count-badge");
-    if (countBadge) {
-      countBadge.textContent = `${filtered.length} 處國際商港`;
+  selectSeaArea(sea) {
+    const isMobile = window.innerWidth <= 768;
+    if (sea === "all") {
+      this.map.flyTo(isMobile ? [23.7, 120.95] : [23.95, 121.0], isMobile ? 6.8 : 7.8, { duration: 1.2 });
+    } else if (sea === "north") {
+      this.setSpillCoordinates(25.3200, 121.5500, true, false);
+    } else if (sea === "strait") {
+      this.setSpillCoordinates(24.1500, 120.3000, true, false);
+    } else if (sea === "south") {
+      this.setSpillCoordinates(22.5800, 120.1500, true, false);
+    } else if (sea === "east") {
+      this.setSpillCoordinates(23.9500, 121.8500, true, false);
     }
-
-    filtered.forEach((port) => {
-      const tideCalc = this.calculateRealtimeTide(port);
-      const isActive = port.id === this.selectedPortId ? "active" : "";
-      const levelSign = tideCalc.level > 0 ? "+" : "";
-
-      const card = document.createElement("div");
-      card.className = `port-item-card ${isActive}`;
-      card.id = `port-item-${port.id}`;
-
-      card.innerHTML = `
-        <div class="port-item-top">
-          <div class="port-name-wrap">
-            <span class="port-item-name">${port.name}</span>
-            <span class="port-tag-pill tag-major">${port.tag}</span>
-          </div>
-          <span class="port-item-level">${levelSign}${tideCalc.level} cm</span>
-        </div>
-        <div class="port-item-bottom">
-          <span>${port.county} ${port.town}</span>
-          <span class="port-trend-badge ${tideCalc.trendClass}">${tideCalc.trendIcon} ${tideCalc.trendText}</span>
-        </div>
-      `;
-
-      card.addEventListener("click", () => {
-        this.selectPort(port.id, true);
-      });
-
-      container.appendChild(card);
-    });
-  }
-
-  renderBottomPills() {
-    const bar = document.getElementById("bottom-ports-bar");
-    if (!bar) return;
-
-    bar.innerHTML = "";
-
-    TIDE_PORTS_DATA.forEach((port) => {
-      const tideCalc = this.calculateRealtimeTide(port);
-      const pill = document.createElement("button");
-      pill.className = `quick-port-pill ${port.id === this.selectedPortId ? "active" : ""}`;
-      pill.id = `quick-pill-${port.id}`;
-
-      const levelSign = tideCalc.level > 0 ? "+" : "";
-      pill.innerHTML = `
-        <span>⚓ ${port.name}</span>
-        <span class="quick-pill-lvl">${levelSign}${tideCalc.level}cm</span>
-      `;
-
-      pill.addEventListener("click", () => {
-        this.selectPort(port.id, true);
-      });
-
-      bar.appendChild(pill);
-    });
-  }
-
-  /* -------------------------------------------------------------
-     5. 選取港口與詳細水文分析抽屜 (Right Inspector)
-     ------------------------------------------------------------- */
-  selectPort(portId, flyTo = true) {
-    this.selectedPortId = portId;
-    const port = TIDE_PORTS_DATA.find((p) => p.id === portId);
-    if (!port) return;
-
-    // 視覺高亮
-    document.querySelectorAll(".port-marker-container").forEach((el) => el.classList.remove("active-port"));
-    const markerEl = document.getElementById(`marker-${portId}`);
-    if (markerEl) markerEl.classList.add("active-port");
-
-    document.querySelectorAll(".port-item-card").forEach((el) => el.classList.remove("active"));
-    const itemEl = document.getElementById(`port-item-${portId}`);
-    if (itemEl) {
-      itemEl.classList.add("active");
-      itemEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
-
-    document.querySelectorAll(".quick-port-pill").forEach((el) => el.classList.remove("active"));
-    const pillEl = document.getElementById(`quick-pill-${portId}`);
-    if (pillEl) pillEl.classList.add("active");
-
-    // 更新頂部商港按鈕樣式
-    document.querySelectorAll(".filter-btn-group .ctrl-btn").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.port === portId);
-    });
-
-    // 平滑飛行至該港
-    if (flyTo) {
-      this.map.flyTo(port.coords, 11, {
-        duration: 1.2,
-        easeLinearity: 0.25
-      });
-      // 點選商港時展開右側商港水文抽屜 (左側海污模擬維持運作無衝突)
-      const drawer = document.getElementById("map-overlay-right");
-      if (drawer) {
-        drawer.classList.remove("hidden");
-      }
-    }
-
-    // 渲染右側詳細抽屜
-    this.renderInspectorDrawer(port);
-  }
-
-  renderInspectorDrawer(port) {
-    const drawer = document.getElementById("map-overlay-right");
-    if (!drawer) return;
-
-    // 標題資訊
-    document.getElementById("inspector-port-name").innerHTML = `
-      ${port.name} <span class="badge-port-tag tag-major">${port.tag}</span>
-    `;
-    document.getElementById("inspector-port-sub").textContent = `${port.fullName} ｜ CWA 測站代碼：${port.cwaStationId}`;
-
-    // 更新 Hero 潮位區塊
-    this.updateInspectorHero(port);
-
-    // 繪製 24 小時天文潮位曲線圖
-    this.renderTideCurveSvg(port);
-
-    // 渲染本日潮汐預報表格 (4 極值)
-    this.renderTidesTable(port);
-
-    // 航海與泊靠安全評估
-    const advisoryEl = document.getElementById("nautical-advisory-content");
-    if (advisoryEl) {
-      const calc = this.calculateRealtimeTide(port);
-      const safeDepth = (port.depthAvg + calc.level / 100).toFixed(2);
-      advisoryEl.innerHTML = `
-        <div style="margin-bottom: 6px;"><strong>港灣水深餘裕：</strong>設計平均水深約 <strong>${port.depthAvg} 公尺</strong>。當前潮位下口門安全水深約 <strong>${safeDepth} 公尺</strong>。</div>
-        <div>${port.nauticalNote}</div>
-      `;
-    }
-
-    // 氣象署官網連結
-    const cwaBtn = document.getElementById("cwa-direct-link");
-    if (cwaBtn) {
-      cwaBtn.onclick = (e) => {
-        e.preventDefault();
-        this.openCwaModal(port);
-      };
-    }
-  }
-
-  updateInspectorHero(port) {
-    const tideCalc = this.calculateRealtimeTide(port);
-    const levelSign = tideCalc.level > 0 ? "+" : "";
-
-    const numEl = document.getElementById("hero-number");
-    const trendEl = document.getElementById("hero-trend-badge");
-    const subinfoEl = document.getElementById("hero-subinfo");
-
-    if (numEl) numEl.textContent = `${levelSign}${tideCalc.level}`;
-    if (trendEl) {
-      trendEl.className = `hero-trend-badge ${tideCalc.trendClass}`;
-      trendEl.innerHTML = `${tideCalc.trendIcon} ${tideCalc.trendText}`;
-    }
-    if (subinfoEl) {
-      subinfoEl.innerHTML = `距下次${tideCalc.nextTide.type} (<strong>${tideCalc.nextTide.timeStr}</strong>) 尚餘 <strong>${tideCalc.countdownStr}</strong>`;
-    }
-  }
-
-  /* -------------------------------------------------------------
-     6. 24 小時天文潮位平滑曲線圖 (SVG Renderer with Current Time Cursor)
-     ------------------------------------------------------------- */
-  renderTideCurveSvg(port) {
-    const svg = document.getElementById("tide-curve-svg");
-    if (!svg) return;
-
-    const width = 350;
-    const height = 135;
-    const padding = { top: 22, right: 20, bottom: 26, left: 35 };
-
-    const points = [];
-    let minLvl = Infinity;
-    let maxLvl = -Infinity;
-
-    for (let m = 0; m <= 1440; m += 15) {
-      const sampleDate = new Date(this.now);
-      sampleDate.setHours(Math.floor(m / 60), m % 60, 0, 0);
-      const calc = this.calculateRealtimeTide(port, sampleDate);
-      points.push({ minutes: m, level: calc.level });
-      if (calc.level < minLvl) minLvl = calc.level;
-      if (calc.level > maxLvl) maxLvl = calc.level;
-    }
-
-    const lvlRange = maxLvl - minLvl || 1;
-    const plotMin = minLvl - lvlRange * 0.15;
-    const plotMax = maxLvl + lvlRange * 0.15;
-
-    const getX = (m) => padding.left + (m / 1440) * (width - padding.left - padding.right);
-    const getY = (lvl) => height - padding.bottom - ((lvl - plotMin) / (plotMax - plotMin)) * (height - padding.top - padding.bottom);
-
-    let pathD = `M ${getX(points[0].minutes)} ${getY(points[0].level)}`;
-    for (let i = 1; i < points.length; i++) {
-      pathD += ` L ${getX(points[i].minutes)} ${getY(points[i].level)}`;
-    }
-
-    const fillPathD = `${pathD} L ${getX(1440)} ${height - padding.bottom} L ${getX(0)} ${height - padding.bottom} Z`;
-
-    const currentM = this.now.getHours() * 60 + this.now.getMinutes() + this.now.getSeconds() / 60;
-    const currentX = getX(currentM);
-    const currentY = getY(this.calculateRealtimeTide(port).level);
-
-    const extremaMarks = port.tides.map((t) => {
-      const [h, min] = t.time.split(":").map(Number);
-      const m = h * 60 + min;
-      const x = getX(m);
-      const y = getY(t[this.currentDatum]);
-      const isHigh = t.type === "滿潮";
-      return `
-        <circle cx="${x}" cy="${y}" r="3.5" fill="${isHigh ? '#38bdf8' : '#f97316'}" stroke="#fff" stroke-width="1.5" />
-        <text x="${x}" y="${isHigh ? y - 8 : y + 14}" font-size="9" fill="${isHigh ? '#7dd3fc' : '#fdba74'}" text-anchor="middle" font-weight="600">${t.type} ${t[this.currentDatum]}</text>
-      `;
-    }).join("");
-
-    svg.innerHTML = `
-      <defs>
-        <linearGradient id="tideWaveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#0284c7" stop-opacity="0.5" />
-          <stop offset="100%" stop-color="#0284c7" stop-opacity="0.0" />
-        </linearGradient>
-      </defs>
-
-      <!-- 網格基準線 -->
-      <line x1="${padding.left}" y1="${getY(0)}" x2="${width - padding.right}" y2="${getY(0)}" stroke="rgba(255,255,255,0.15)" stroke-dasharray="3,3" />
-      <text x="${padding.left - 5}" y="${getY(0) + 3}" fill="#64748b" font-size="8" text-anchor="end">0</text>
-
-      <!-- 波形填充與線條 -->
-      <path d="${fillPathD}" fill="url(#tideWaveGradient)" />
-      <path d="${pathD}" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" />
-
-      <!-- 滿乾潮標記 -->
-      ${extremaMarks}
-
-      <!-- 當前時間垂直指示線 -->
-      <line x1="${currentX}" y1="${padding.top}" x2="${currentX}" y2="${height - padding.bottom}" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="2,2" />
-      <circle cx="${currentX}" cy="${currentY}" r="5" fill="#ef4444" stroke="#ffffff" stroke-width="2">
-        <animate attributeName="r" values="4;6.5;4" dur="1.8s" repeatCount="indefinite" />
-      </circle>
-      <text x="${currentX}" y="${padding.top - 5}" font-size="9" font-weight="bold" fill="#f87171" text-anchor="middle">現在</text>
-
-      <!-- 時間橫軸刻度 -->
-      <text x="${getX(0)}" y="${height - 8}" font-size="9" fill="#94a3b8" text-anchor="start">00:00</text>
-      <text x="${getX(360)}" y="${height - 8}" font-size="9" fill="#64748b" text-anchor="middle">06:00</text>
-      <text x="${getX(720)}" y="${height - 8}" font-size="9" fill="#94a3b8" text-anchor="middle">12:00</text>
-      <text x="${getX(1080)}" y="${height - 8}" font-size="9" fill="#64748b" text-anchor="middle">18:00</text>
-      <text x="${getX(1440)}" y="${height - 8}" font-size="9" fill="#94a3b8" text-anchor="end">24:00</text>
-    `;
-  }
-
-  /* -------------------------------------------------------------
-     7. 本日 4 次潮位極值詳細表格
-     ------------------------------------------------------------- */
-  renderTidesTable(port) {
-    const tbody = document.getElementById("tides-table-body");
-    if (!tbody) return;
-
-    tbody.innerHTML = "";
-
-    port.tides.forEach((t) => {
-      const tr = document.createElement("tr");
-      const isHigh = t.type === "滿潮";
-      const typeClass = isHigh ? "cell-high-tide" : "cell-low-tide";
-
-      tr.innerHTML = `
-        <td class="${typeClass}">${t.type}</td>
-        <td><strong>${t.time}</strong></td>
-        <td>${t.chart_datum > 0 ? "+" : ""}${t.chart_datum}</td>
-        <td>${t.twvd > 0 ? "+" : ""}${t.twvd}</td>
-        <td>${t.msl > 0 ? "+" : ""}${t.msl}</td>
-      `;
-
-      tbody.appendChild(tr);
-    });
-  }
-
-  /* -------------------------------------------------------------
-     8. 基準面切換與商港切換
-     ------------------------------------------------------------- */
-  setDatum(datum) {
-    this.currentDatum = datum;
-
-    document.querySelectorAll(".datum-btn-group .ctrl-btn").forEach((b) => {
-      b.classList.toggle("active", b.dataset.datum === datum);
-    });
-
-    this.renderMapMarkers();
-    this.renderPortsList();
-    this.renderBottomPills();
-
-    const selectedPort = TIDE_PORTS_DATA.find((p) => p.id === this.selectedPortId);
-    if (selectedPort) {
-      this.renderInspectorDrawer(selectedPort);
-    }
-  }
-
-  setPortFilter(portId) {
-    this.currentPortFilter = portId;
-
-    document.querySelectorAll(".filter-btn-group .ctrl-btn").forEach((b) => {
-      b.classList.toggle("active", b.dataset.port === portId);
-    });
-
-    if (portId === "all") {
-      this.map.flyTo([23.95, 121.0], 7.8, {
-        duration: 1.2
-      });
-    } else {
-      this.selectPort(portId, true);
-    }
-  }
-
-  /* -------------------------------------------------------------
-     10. CWA 30天預報彈窗 (In-App Modal)
-     ------------------------------------------------------------- */
-  openCwaModal(port) {
-    const modal = document.getElementById("cwa-modal-backdrop");
-    const title = document.getElementById("cwa-modal-title");
-    const frame = document.getElementById("cwa-modal-iframe");
-    if (!modal || !frame) return;
-
-    title.innerHTML = `交通部中央氣象署 - ${port.fullName} 未來 30 天潮汐預報表`;
-    frame.src = port.cwaUrl;
-    modal.classList.add("open");
-  }
-
-  closeCwaModal() {
-    const modal = document.getElementById("cwa-modal-backdrop");
-    const frame = document.getElementById("cwa-modal-iframe");
-    if (!modal) return;
-
-    modal.classList.remove("open");
-    if (frame) frame.src = "about:blank";
   }
 
   /* -------------------------------------------------------------
      11. 事件監聽綁定
      ------------------------------------------------------------- */
   initEventListeners() {
-    // 基準面按鈕
-    document.querySelectorAll(".datum-btn-group .ctrl-btn").forEach((btn) => {
+    // 臺灣周邊海域海流快速定位按鈕
+    document.querySelectorAll(".sea-area-btn-group .ctrl-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        this.setDatum(btn.dataset.datum);
+        document.querySelectorAll(".sea-area-btn-group .ctrl-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        this.selectSeaArea(btn.dataset.sea);
       });
     });
-
-    // 五大商港快速按鈕
-    document.querySelectorAll(".filter-btn-group .ctrl-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        this.setPortFilter(btn.dataset.port);
-      });
-    });
-
-    // 側邊欄收合切換
-    const toggleSidebarBtn = document.getElementById("sidebar-toggle-btn");
-    const leftSidebar = document.getElementById("map-overlay-left");
-    if (toggleSidebarBtn && leftSidebar) {
-      toggleSidebarBtn.addEventListener("click", () => {
-        leftSidebar.classList.toggle("collapsed");
-        toggleSidebarBtn.innerHTML = leftSidebar.classList.contains("collapsed") ? "☰" : "◀";
-      });
-    }
-
-    // 右側抽屜關閉
-    const closeInspectorBtn = document.getElementById("inspector-close-btn");
-    const rightInspector = document.getElementById("map-overlay-right");
-    if (closeInspectorBtn && rightInspector) {
-      closeInspectorBtn.addEventListener("click", () => {
-        rightInspector.classList.add("hidden");
-      });
-    }
-
-    // 搜尋輸入框
-    const searchInput = document.getElementById("port-search-input");
-    if (searchInput) {
-      searchInput.addEventListener("input", (e) => {
-        this.searchQuery = e.target.value.trim();
-        this.renderPortsList();
-      });
-    }
-
-    // CWA 彈窗關閉
-    const modalCloseBtn = document.getElementById("modal-close-btn");
-    const modalBackdrop = document.getElementById("cwa-modal-backdrop");
-    if (modalCloseBtn) {
-      modalCloseBtn.addEventListener("click", () => this.closeCwaModal());
-    }
-    if (modalBackdrop) {
-      modalBackdrop.addEventListener("click", (e) => {
-        if (e.target === modalBackdrop) this.closeCwaModal();
-      });
-    }
 
     // 船難海污模擬開關按鈕
     const spillToggleBtn = document.getElementById("btn-spill-toggle");
@@ -830,6 +410,33 @@ class TaiwanTideApp {
         this.toggleSpillMinimize();
       });
     }
+
+    // 手機版點擊面板標題列或拖曳條展開/收合抽屜
+    const spillHeader = document.getElementById("spill-panel-header");
+    if (spillHeader) {
+      spillHeader.addEventListener("click", (e) => {
+        if (e.target.closest("#btn-spill-close") || e.target.closest("#btn-spill-minimize")) {
+          return;
+        }
+        if (window.innerWidth <= 768) {
+          this.toggleSpillMinimize();
+        }
+      });
+    }
+
+    // 視窗縮放與方向變換時適配按鈕文字與 Peek 摘要
+    window.addEventListener("resize", () => {
+      this.updateMobilePeekSummary();
+      const minBtn = document.getElementById("btn-spill-minimize");
+      if (minBtn) {
+        const isMobile = window.innerWidth <= 768;
+        if (this.spillSim.isMinimized) {
+          minBtn.textContent = isMobile ? "▲ 展開" : "▢";
+        } else {
+          minBtn.textContent = isMobile ? "▼ 收合" : "_";
+        }
+      }
+    });
 
     // 自訂地圖沉船位置按鈕
     const customPinBtn = document.getElementById("btn-custom-pin");
@@ -884,9 +491,6 @@ class TaiwanTideApp {
 
     const panel = document.getElementById("spill-panel");
     const toggleBtn = document.getElementById("btn-spill-toggle");
-    const leftSidebar = document.getElementById("map-overlay-left");
-    const toggleSidebarBtn = document.getElementById("sidebar-toggle-btn");
-    const rightInspector = document.getElementById("map-overlay-right");
 
     if (panel) {
       panel.style.display = "flex";
@@ -894,16 +498,17 @@ class TaiwanTideApp {
     if (toggleBtn) {
       toggleBtn.classList.add("active");
     }
-    // 左側欄位優先由船難海污模擬系統啟動，隱藏商港側欄與折疊按鈕
-    if (leftSidebar) {
-      leftSidebar.classList.add("hidden");
-    }
-    if (toggleSidebarBtn) {
-      toggleSidebarBtn.classList.add("hidden");
-    }
-    // 右側抽屜初始隱藏保持全景視野
-    if (rightInspector) {
-      rightInspector.classList.add("hidden");
+
+    // 依手機版登入適配需求：預設以底部收合 Peek 模式啟動，完整露出臺灣地圖海面供自由點選
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      this.spillSim.isMinimized = true;
+      if (panel) panel.classList.add("minimized");
+      const minBtn = document.getElementById("btn-spill-minimize");
+      if (minBtn) {
+        minBtn.textContent = "▲ 展開";
+        minBtn.title = "展開推演面板";
+      }
     }
 
     const mapEl = document.getElementById("map");
@@ -964,8 +569,6 @@ class TaiwanTideApp {
   toggleSpillPanel(forceState) {
     const panel = document.getElementById("spill-panel");
     const toggleBtn = document.getElementById("btn-spill-toggle");
-    const leftSidebar = document.getElementById("map-overlay-left");
-    const toggleSidebarBtn = document.getElementById("sidebar-toggle-btn");
     if (!panel || !toggleBtn) return;
 
     const nextState = forceState !== undefined ? forceState : !this.spillSim.isOpen;
@@ -974,10 +577,6 @@ class TaiwanTideApp {
     if (this.spillSim.isOpen) {
       panel.style.display = "flex";
       toggleBtn.classList.add("active");
-
-      // 左側空間優先讓給船難海污模擬系統
-      if (leftSidebar) leftSidebar.classList.add("hidden");
-      if (toggleSidebarBtn) toggleSidebarBtn.classList.add("hidden");
 
       // 常駐啟用海面點選沉船模式
       this.spillSim.isDroppingPin = true;
@@ -1000,10 +599,6 @@ class TaiwanTideApp {
       this.spillSim.isDroppingPin = false;
       const mapEl = document.getElementById("map");
       if (mapEl) mapEl.classList.remove("map-pin-drop-mode");
-
-      // 當關閉海污模擬時，恢復左側商港清單欄位
-      if (leftSidebar) leftSidebar.classList.remove("hidden");
-      if (toggleSidebarBtn) toggleSidebarBtn.classList.remove("hidden");
     }
   }
 
@@ -1017,14 +612,26 @@ class TaiwanTideApp {
     if (!panel || !btn) return;
 
     this.spillSim.isMinimized = !this.spillSim.isMinimized;
+    const isMobile = window.innerWidth <= 768;
     if (this.spillSim.isMinimized) {
       panel.classList.add("minimized");
-      btn.textContent = "▢";
-      btn.title = "展開面板";
+      btn.textContent = isMobile ? "▲ 展開" : "▢";
+      btn.title = "展開推演面板";
     } else {
       panel.classList.remove("minimized");
-      btn.textContent = "_";
-      btn.title = "最小化面板";
+      btn.textContent = isMobile ? "▼ 收合" : "_";
+      btn.title = "收合推演面板";
+    }
+    this.updateMobilePeekSummary();
+  }
+
+  updateMobilePeekSummary() {
+    const summaryEl = document.getElementById("mobile-peek-summary");
+    if (!summaryEl) return;
+    if (this.spillSim.isMinimized) {
+      summaryEl.textContent = `T+${this.spillSim.hours}h ｜ ${this.spillSim.volume}噸 ｜ 點此展開 ▲`;
+    } else {
+      summaryEl.textContent = `點此收合面板 ▼`;
     }
   }
 
@@ -1950,8 +1557,9 @@ class TaiwanTideApp {
     const driftEl = document.getElementById("spill-current-drift");
     if (driftEl) driftEl.textContent = seaCurrent.driftMechanism;
 
-    const nearestEl = document.getElementById("spill-nearest-port");
-    if (nearestEl) nearestEl.textContent = `${nearestPort.name} (${distToNearestPort.toFixed(1)} nm ｜ ${threatLevel})`;
+    const driftCenterEl = document.getElementById("spill-drift-center-coords");
+    if (driftCenterEl) driftCenterEl.textContent = `${centerLat.toFixed(4)}°N, ${centerLng.toFixed(4)}°E`;
+
 
     const beachingEl = document.getElementById("spill-beaching-eta");
     if (beachingEl) beachingEl.textContent = beachingEta;
@@ -2002,6 +1610,9 @@ class TaiwanTideApp {
         coastalActionEl.textContent = "持續監控海流與潮流推移；於迎流向之商港口門與沿岸敏感水域預先佈設防污攔油索。";
       }
     }
+
+    // 同步更新手機版底部收合條之時間與規模摘要
+    this.updateMobilePeekSummary();
   }
 }
 
