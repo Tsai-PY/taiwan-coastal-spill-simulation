@@ -1,6 +1,9 @@
 # 台灣沿海船難海污模擬系統 (Taiwan Coastal Shipwreck Marine Oil Spill Simulation System)
 
-專為臺灣沿海海域船難應變與五大國際商港（**台北港、基隆港、台中港、高雄港、花蓮港**）量身打造之高精度海流現況擴散推演與即時潮位監測系統。
+> 🌐 **官方正式上線網址（即開即用）**：[https://tsai-py.github.io/taiwan-coastal-spill-simulation/](https://tsai-py.github.io/taiwan-coastal-spill-simulation/)  
+> 💻 **Windows 單機免安裝獨立版 (.exe)**：[點此前往 GitHub Releases 下載最新版](https://github.com/Tsai-PY/taiwan-coastal-spill-simulation/releases/tag/v1.0.0)
+
+專為臺灣沿海海域船難應變量身打造之高精度海流現況擴散推演與即時潮位監測系統。
 
 ---
 
